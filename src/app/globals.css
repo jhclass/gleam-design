@@ -1,3 +1,5 @@
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+@import "../css/xeicon.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,9 +15,14 @@
     --foreground: #ededed;
   }
 }
-
+html,
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--background);
+  background: var(--foreground);
+  font-family: "pretendard", sans-serif;
+  font-size: medium;
+  width: 100%;
+  max-width: 1920px;
+  overflow-x: hidden;
+  margin: 0 auto;
 }

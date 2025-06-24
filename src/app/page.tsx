@@ -1,101 +1,135 @@
+"use client";
+import { sectionState } from "@/atoms/mainSection";
+import SectionTopAnimation from "@/component/animation/SectionTopAnimation";
+import Contact from "@/component/Contact";
+import MainSlider from "@/component/MainSlider";
 import Image from "next/image";
+import PartnersSlider from "@/component/PartnersSlider";
+import { useEffect, useRef } from "react";
+import { useSetRecoilState } from "recoil";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const setSectionTop = useSetRecoilState(sectionState);
+  const sectionRefs = useRef<(HTMLElement | null)[]>([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  useEffect(() => {
+    const updateSectionTops = () => {
+      const newPositions = sectionRefs.current.map((section) =>
+        section
+          ? { top: section.getBoundingClientRect().top + window.scrollY }
+          : { top: 0 }
+      );
+
+      setSectionTop({ sections: newPositions });
+    };
+    window.addEventListener("scroll", updateSectionTops);
+    window.addEventListener("resize", updateSectionTops);
+
+    updateSectionTops();
+
+    return () => {
+      window.removeEventListener("scroll", updateSectionTops);
+      window.removeEventListener("resize", updateSectionTops);
+    };
+  }, [setSectionTop]);
+  return (
+    <>
+      <MainSlider />
+      <section
+        id="main-section1"
+        className="flex justify-center relative z-10"
+        ref={(el) => {
+          sectionRefs.current[0] = el;
+        }}
+      >
+        {/* 배경에서 움직이는 SVG 파동 */}
+        <SectionTopAnimation firstColor="#6B49CA" secondColor="#486AC7" />
+        <div className="w-full  flex py-24 flex-col items-center relative z-20">
+          <h2 className="px-2 text-center font-bold text-[3vh] md:text-[4vh]">
+            글림디자인을 소개합니다.
+          </h2>
+          <span className="px-2 text-center mt-5">
+            글림디자인이 하면 확실하게 다릅니다.
+          </span>
+          <div className="w-full mt-10">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/images/pexels-kaboompics-6224.jpg"
+              alt="image"
+              width={0}
+              height={0}
+              className="w-full h-auto"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+      <section
+        id="main-section2"
+        className="flex justify-center relative z-10"
+        ref={(el) => {
+          sectionRefs.current[1] = el;
+        }}
+      >
+        {/* 배경에서 움직이는 SVG 파동 */}
+        <SectionTopAnimation firstColor="#6B49CA" secondColor="#486AC7" />
+        <div className="w-full  flex py-24 flex-col items-center relative z-20">
+          <h2 className="px-2 text-center font-bold text-[3vh] md:text-[4vh]">
+            글림디자인은 믿고 맡길 수 있습니다.
+          </h2>
+          <span className="px-2 text-center mt-5">
+            2017년 이후로 수 많은 파트너사 와 함께 하였습니다.
+          </span>
+          <div className="w-full mt-10">
+            <PartnersSlider />
+          </div>
+        </div>
+      </section>
+      <section
+        id="main-section3"
+        className="flex justify-center relative z-10"
+        ref={(el) => {
+          sectionRefs.current[2] = el;
+        }}
+      >
+        {/* 배경에서 움직이는 SVG 파동 */}
+        <SectionTopAnimation firstColor="#6B49CA" secondColor="#486AC7" />
+        <div className="w-full flex py-24 flex-col items-center relative z-20">
+          <h2 className="px-2 text-center font-bold text-[3vh] md:text-[4vh]">
+            평균 만족율 99% , 평점 4.99/5
+          </h2>
+          <span className="px-2 text-center mt-5">
+            크몽, 스마트스토어(NAVER)
+          </span>
+          <div className="w-full mt-10">
+            <Image
+              src="/images/pexels-cottonbro-3171837.jpg"
+              alt="image"
+              width={0}
+              height={0}
+              className="w-full h-auto hidden md:block"
+            />
+          </div>
+        </div>
+      </section>
+      <section
+        id="main-section4"
+        className="flex justify-center relative z-10"
+        ref={(el) => {
+          sectionRefs.current[3] = el;
+        }}
+      >
+        {/* 배경에서 움직이는 SVG 파동 */}
+        <SectionTopAnimation firstColor="#6B49CA" secondColor="#486AC7" />
+        <div className="w-full lg:w-4/5  flex py-24 flex-col items-center relative z-20">
+          <h2 className="px-2 text-center font-bold text-[3vh] md:text-[4vh]">
+            Contact
+          </h2>
+          <span className="px-2 text-center mt-5">
+            글림디자인은 고객사의 성공을 위해 함께 고민합니다. <br />
+            편하게 문의주시기 바랍니다.
+          </span>
+          <Contact />
+        </div>
+      </section>
+    </>
   );
 }
