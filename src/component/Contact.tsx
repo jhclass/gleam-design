@@ -11,9 +11,14 @@ interface FormData {
   file: File[] | null;
   detail: string;
 }
+const costList = [
+  "10만원 이상 ~ 50만원 미만",
+  "50만원 이상 ~ 100만원 미만",
+  "100만원 이상",
+];
 export default function Contact() {
   const [agreeSelect, setAgreeSelect] = useState("agree");
-  const [costSelect, setCostSelect] = useState("100 만원 이상");
+  const [costSelect, setCostSelect] = useState<string>(costList[2]);
   const [files, setFiles] = useState<File[] | null>([]);
   const {
     register,
@@ -25,7 +30,7 @@ export default function Contact() {
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
   const onChangedFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e);
+    // console.log(e);
     if (!e.target.files) return;
     const selectedFiles = Array.from(e.target.files);
     const oversizedFiles = selectedFiles.filter(
@@ -116,43 +121,43 @@ export default function Contact() {
               <input
                 id="cost10"
                 type="radio"
-                value={"10만원 이상 ~ 50만원 미만"}
-                checked={costSelect === "10만원 이상 ~ 50만원 미만"}
+                value={costList[0]}
+                checked={costSelect === costList[0]}
                 className="w-5 h-5 rounded-lg pl-4 ml-4 cursor-pointer"
                 {...register("cost")}
                 onChange={(e) => {
                   setCostSelect(e.target.value);
                 }}
               />
-              <label htmlFor="cost10">&nbsp;10만원 이상 ~ 50만원 미만</label>
+              <label htmlFor="cost10">&nbsp;{costList[0]}</label>
             </div>
             <div className="flex items-center mt-2 md:mt-0">
               <input
                 id="cost50"
                 type="radio"
-                value={"50 만원 이상 ~ 100 만원 미만"}
-                checked={costSelect === "50 만원 이상 ~ 100 만원 미만"}
+                value={"costList[1]"}
+                checked={costSelect === "costList[1]"}
                 {...register("cost")}
                 onChange={(e) => {
                   setCostSelect(e.target.value);
                 }}
                 className="w-5 h-5 rounded-lg pl-4 ml-4 cursor-pointer"
               />
-              <label htmlFor="cost50">&nbsp;50 만원 이상 ~ 100 만원 미만</label>
+              <label htmlFor="cost50">&nbsp;{costList[1]}</label>
             </div>
             <div className="flex items-center mt-2 md:mt-0">
               <input
                 id="cost"
                 type="radio"
-                value={"100 만원 이상"}
-                checked={costSelect === "100 만원 이상"}
+                value={costList[2]}
+                checked={costSelect === costList[2]}
                 className="w-5 h-5 rounded-lg pl-4 ml-4 cursor-pointer"
                 {...register("cost")}
                 onChange={(e) => {
                   setCostSelect(e.target.value);
                 }}
               />
-              <label htmlFor="cost">&nbsp;100 만원 이상 </label>
+              <label htmlFor="cost">&nbsp;{costList[2]} </label>
             </div>
           </div>
         </div>
@@ -214,13 +219,13 @@ export default function Contact() {
         <div className="flex justify-center mt-20">
           <button
             type="submit"
-            className="w-2/5 md:w-1/5 bg-blue-600 p-4 text-white rounded-xl"
+            className="w-2/5 md:w-1/5 bg-primary p-4 text-white rounded-xl"
           >
             전송
           </button>
           <button
             type="button"
-            className="w-2/5 md:w-1/5 bg-blue-500 p-4 ml-4 text-white rounded-xl"
+            className="w-2/5 md:w-1/5 bg-accentRed p-4 ml-4 text-white rounded-xl"
           >
             초기화
           </button>

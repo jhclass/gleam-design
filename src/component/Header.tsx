@@ -7,7 +7,7 @@ export default function Header() {
   const router = useRouter();
   const pathName = usePathname();
   const sectionsOffsetTop = useRecoilValue(sectionState);
-  console.log(pathName.split("/")[1]);
+  //console.log(pathName.split("/")[1]);
   const gnb_list = [
     {
       list_name: "Portfolio",
@@ -24,24 +24,24 @@ export default function Header() {
   ];
   const admin_gnb_list = [
     {
-      list_name: "Home",
-      path: "",
+      list_name: "Home(Dashboard)",
+      path: "/admin/dashboard",
     },
     {
       list_name: "Contact List",
-      path: "",
+      path: "/admin/contact",
     },
     {
       list_name: "Board",
-      path: "",
+      path: "/admin/board",
     },
     {
       list_name: "SMS",
-      path: "",
+      path: "/admin/sms",
     },
     {
       list_name: "Login",
-      path: "",
+      path: "/admin/member/login",
     },
   ];
   const [activeNavIndex, setActiveNavIndex] = useState<number | null>(null);
@@ -70,12 +70,14 @@ export default function Header() {
         behavior: "smooth",
       });
       setActiveNavIndex(index);
+      setIsMobileNavOpen(false);
     } else {
       window.scrollTo({
         top: sectionsOffsetTop?.sections[index].top - headerHeight * 2,
         behavior: "smooth",
       });
       setActiveNavIndex(index);
+      setIsMobileNavOpen(false);
     }
   };
 
@@ -88,7 +90,11 @@ export default function Header() {
     >
       <h1
         className="text-xl font-bold cursor-pointer hover:text-white"
-        onClick={() => router.push("/")}
+        onClick={() =>
+          pathName.split("/")[1] === "admin"
+            ? router.push("/admin/dashboard")
+            : router.push("/")
+        }
       >
         {pathName.split("/")[1] === "admin" ? "Admin" : "Gleam IT Design"}
       </h1>
@@ -159,7 +165,9 @@ export default function Header() {
                   className={`p-5 hover:text-white cursor-pointer  font-bold ${
                     activeNavIndex == index ? "text-white" : "text-gray-400"
                   }`}
-                  onClick={() => {}}
+                  onClick={() => {
+                    router.push(list.path);
+                  }}
                 >
                   {list.list_name}
                 </li>
