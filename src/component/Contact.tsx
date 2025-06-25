@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+
 interface FormData {
   companyName: string;
   name: string;
@@ -27,6 +28,29 @@ export default function Contact() {
     clearErrors,
     formState: { errors },
   } = useForm<FormData>();
+  const [textareaLength, setTextAreaLength] = useState<number>(0);
+  const textareaLengthCheck = (textAreaClassName: string) => {
+    const textarea = document.querySelector(
+      textAreaClassName
+    ) as HTMLTextAreaElement;
+    const MAX_LENGTH = 300;
+    textarea.addEventListener("input", function (e: Event) {
+      const target = e.target as HTMLTextAreaElement;
+      if (target.value.length <= MAX_LENGTH) {
+        clearErrors("detail");
+        setTextAreaLength(target?.value?.length);
+      } else {
+        setError("detail", {
+          type: "manual",
+          message: `최대 ${MAX_LENGTH}자 까지만 입력 가능합니다.`,
+        });
+        target.value = target.value.slice(0, MAX_LENGTH);
+      }
+    });
+  };
+  useEffect(() => {
+    textareaLengthCheck(".textarea");
+  }, [textareaLength]);
 
   const MAX_FILE_SIZE = 10 * 1024 * 1024;
   const onChangedFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -164,10 +188,20 @@ export default function Contact() {
         <div className="flex flex-col mt-4">
           <label className="text-xl">상세내용</label>
           <textarea
-            className="h-40 rounded-lg p-4 mt-2"
+            className="textarea h-40 rounded-lg p-4 mt-2"
             placeholder="상세내용을 입력하여주세요."
             {...register("detail", { required: "상세내용을 입력하여주세요." })}
           ></textarea>
+          <div className="flex text-gray-500 px-1">
+            {textareaLength < 300 ? (
+              <span className="font-semibold text-gray-800">
+                {textareaLength}
+              </span>
+            ) : (
+              <span className="text-red-500 font-semibold">300</span>
+            )}
+            /300자
+          </div>
         </div>
         <div className="flex flex-col mt-4">
           <label className="text-xl" htmlFor="fileInput">
@@ -224,8 +258,9 @@ export default function Contact() {
             전송
           </button>
           <button
-            type="button"
+            type="reset"
             className="w-2/5 md:w-1/5 bg-accentRed p-4 ml-4 text-white rounded-xl"
+            onClick={() => setTextAreaLength(0)}
           >
             초기화
           </button>
