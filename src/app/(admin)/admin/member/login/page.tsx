@@ -5,7 +5,7 @@ export default function Login() {
   const [loginDocHeight, setLoginDocHeight] = useState<number>(0);
   const [id, setId] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  useEffect(() => {
+  const fixedWindowHeight = () => {
     let winHeight: number = 0;
     let headerHeight: number = 0;
     let footerHeight: number = 0;
@@ -20,6 +20,15 @@ export default function Login() {
     }
     const docHeight: number = winHeight - headerHeight - footerHeight;
     setLoginDocHeight(docHeight);
+  };
+  if (typeof window !== "undefined") {
+    window.addEventListener("resize", function () {
+      fixedWindowHeight();
+    });
+  }
+
+  useEffect(() => {
+    fixedWindowHeight();
   }, []);
   const onsubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
