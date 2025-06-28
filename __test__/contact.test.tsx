@@ -3,7 +3,9 @@ import Contact from "@/component/Contact";
 import userEvent from "@testing-library/user-event";
 
 test("파일업로드 후 alert", async () => {
-  const alertMock = jest.spyOn(window, "alert").mockImplementation(() => {});
+  const alertMock = jest.spyOn(window, "alert").mockImplementation((msg) => {
+    console.log("출력완료", msg);
+  });
   render(<Contact />);
 
   const fileInput = screen.getByLabelText("첨부파일");

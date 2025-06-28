@@ -6,10 +6,10 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true, // import fs from 'fs' instead of import * as fs from 'fs'
     "module": "esnext",
     "moduleResolution": "bundler",
-    "resolveJsonModule": true,
+    "resolveJsonModule": true, //json import support
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
