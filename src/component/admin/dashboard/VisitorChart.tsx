@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
+import { themeColor } from "@/css/themeColor";
+import { th } from "framer-motion/client";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -9,6 +11,7 @@ const ReactApexChart = dynamic(() => import("react-apexcharts"), {
 interface VisitorData {
   hour: number;
   count: number;
+  validCount: number;
 }
 export default function VisitorChart({
   data,
@@ -17,40 +20,36 @@ export default function VisitorChart({
   data: VisitorData[];
   isMobile: boolean;
 }) {
-  console.log(data);
   const now = new Date();
   const currentHour = now.getHours();
-  console.log(typeof currentHour);
-  const newMericData = data.map((item) => ({
-    x: Number(item.hour),
-    y: item.count,
-  }));
-  console.log(typeof newMericData);
+
+  const mobileRange = useMemo(() => {
+    return {
+      min: Math.max(0, currentHour - 5),
+      max: currentHour,
+    };
+  }, [currentHour]);
   const maxCountHour = useMemo(() => {
     return data.reduce((acc, cur) => (cur.count > acc.count ? cur : acc)).hour;
   }, [data]);
   const totalCount = useMemo(() => {
     return data.reduce((acc, cur) => acc + cur.count, 0);
   }, [data]);
-  console.log(totalCount, "totalCount");
-  console.log(maxCountHour, "maxCounterHour");
-  const filterData = useMemo(() => {
-    if (!isMobile) return data;
-    return data.filter(
-      (d) => d.hour >= currentHour - 1 && d.hour <= currentHour + 1
-    );
-  }, [currentHour, data, isMobile]);
-  console.log(filterData, "filterData");
+  const totalValidCount = data.reduce((acc, cur) => acc + cur.validCount, 0);
+  const validateRate = (totalValidCount / totalCount) * 100;
+  const aroundValidateRate = validateRate.toFixed(2);
+
   const options: ApexOptions = {
     legend: {
       show: true,
       position: "top",
       horizontalAlign: "center",
     },
-    colors: ["#465FFF"],
+    colors: [themeColor.primary, themeColor.accentRed, themeColor.accentYellow],
     chart: {
       fontFamily: "Pretendard, sans-serif",
-      type: "bar",
+      type: "line",
+      stacked: true,
       toolbar: {
         show: false,
       },
@@ -61,22 +60,31 @@ export default function VisitorChart({
 
     stroke: {
       curve: "smooth",
-      width: [1, 1],
+      width: [1, 1, 1],
     },
     fill: {
       type: "gradient",
       gradient: {
-        opacityFrom: 0.55,
-        opacityTo: 0.75,
+        opacityFrom: 0.75,
+        opacityTo: 0.8,
       },
     },
     markers: {
-      size: 0,
+      size: 3,
       strokeColors: "#fff",
       strokeWidth: 2,
       hover: {
         size: 6,
       },
+      discrete: [
+        {
+          seriesIndex: 2,
+          dataPointIndex: data.findIndex((item) => item.hour === maxCountHour),
+          size: 6,
+          fillColor: themeColor.accentYellow,
+          strokeColor: "#fff",
+        },
+      ],
     },
     grid: {
       xaxis: {
@@ -99,7 +107,9 @@ export default function VisitorChart({
     },
     xaxis: {
       type: "numeric",
-      tickAmount: isMobile ? 2 : 23,
+      min: isMobile ? mobileRange.min : undefined,
+      max: isMobile ? mobileRange.max : undefined,
+      tickAmount: isMobile ? 5 : 23,
       labels: {
         formatter: (val: number | string) => `${Math.round(Number(val))}시`,
       },
@@ -112,12 +122,33 @@ export default function VisitorChart({
   };
   const series = [
     {
-      name: "방문자 수",
-      data: filterData?.map((item) => {
+      name: "유효방문자 수(활동)",
+      type: "bar",
+      data: data?.map((item) => {
+        return {
+          x: Number(item.hour) || 0,
+          y: item.validCount || 0,
+        };
+      }),
+    },
+    {
+      name: "기타방문자 수(비활동)",
+      type: "bar",
+      data: data?.map((item) => {
+        return {
+          x: Number(item.hour) || 0,
+          y: item.count - item.validCount || 0,
+        };
+      }),
+    },
+    {
+      name: "전체 방문자 수",
+      type: "line",
+
+      data: data.map((item) => {
         return {
           x: Number(item.hour) || 0,
           y: item.count || 0,
-          fillColor: item.hour === maxCountHour ? "#FF4560" : "#4e81ef",
         };
       }),
     },
@@ -125,11 +156,18 @@ export default function VisitorChart({
   return (
     <>
       <div>
-        <div className="text-center mb-2">
-          총 방문자 : <span className="font-semibold">{totalCount}명</span>
+        <div className="text-center mb-2 flex items-center justify-center gap-5 md:gap-10">
+          <div className="text-[0.9rem] md:text-[1rem]">
+            총 방문자 : <span className="font-semibold">{totalCount}명</span>
+          </div>
+          <div className="text-[0.9rem] md:text-[1rem]">
+            유효 방문자 :{" "}
+            <span className="font-semibold">{totalValidCount}명</span>
+            <span>({aroundValidateRate}%)</span>
+          </div>
         </div>
         <ReactApexChart
-          type="bar"
+          type="line"
           options={options}
           series={series}
           height={350}

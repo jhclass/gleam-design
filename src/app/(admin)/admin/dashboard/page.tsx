@@ -34,12 +34,22 @@ export default function AdminDashboard() {
           <h2 className="w-full py-8 text-[1.5rem] text-center">
             관리자 대시보드
           </h2>
-          <div>
-            <h3 className="text-[1rem] text-center py-2">일간 방문자</h3>
-            <VisitorChart data={visitor} isMobile={isMobile} />
+          <div className="visitorsWrap w-full">
+            <div className="flex justify-center items-center gap-10 py-10">
+              <span className="active underline text-accentRed font-semibold cursor-pointer">
+                일간
+              </span>
+              <span>주간</span>
+              <span>월간</span>
+            </div>
+            <div className="visitorsContentWrap w-full">
+              <div className="mb-24">
+                <VisitorChart data={visitor} isMobile={isMobile} />
+              </div>
+              <div></div>
+              <div></div>
+            </div>
           </div>
-          <div></div>
-          <div></div>
         </div>
       </div>
     </>

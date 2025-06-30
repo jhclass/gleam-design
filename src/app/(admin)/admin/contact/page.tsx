@@ -25,7 +25,7 @@ export default function AdminContactPage() {
             <div className="mt-2">
               <span className="font-semibold">전화번호: </span>
               <span>01012341234</span>
-              <button className="p-1 underline text-[#0d37aa]">
+              <button className="p-1 underline text-primary">
                 <i className="xi-mobile"></i>전화하기
               </button>
             </div>
