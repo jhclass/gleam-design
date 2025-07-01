@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 import { themeColor } from "@/css/themeColor";
-import { th } from "framer-motion/client";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
   ssr: false,
