@@ -1,12 +1,12 @@
 .visitorsTabBtn {
 }
-.visitorsTabBtn > span {
+.visitorsTabBtn > button {
   cursor: pointer;
 }
-.visitorsTabBtn > span.active {
+.visitorsTabBtn > button.active {
   font-weight: 600;
   text-decoration: underline;
-  color: red;
+  color: #ff4500;
 }
 .visitorsContentWrap > div {
   display: none;
