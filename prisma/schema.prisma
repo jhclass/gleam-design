@@ -19,6 +19,7 @@ model User {
   userId    String
   email     String
   name      String
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
