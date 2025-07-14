@@ -1,9 +1,36 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import { NextResponse, NextRequest } from "next/server";
+import { verifyToken } from "@/lib/verifyToken";
+export async function GET(req: NextRequest) {
+  try {
+    const context = verifyToken(req);
+    console.log(context, "context");
 
-export async function GET() {
-  return NextResponse.json({ ok: true });
+    const allUserData = await prisma.user.findMany();
+    console.log(allUserData);
+    return NextResponse.json({ ok: true, data: allUserData });
+  } catch (error) {
+    if (error instanceof Error) {
+      if (error.message === "jwt expired") {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: "에러발생! 에러메세지를 확인하세요.",
+            error: `Error:${error.message}`,
+          },
+          {
+            status: 401,
+          }
+        );
+      }
+      return NextResponse.json({
+        ok: false,
+        message: "에러발생:에러메세지를 확인하세요.",
+        error: `Error:${error.message}`,
+      });
+    }
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -40,4 +67,9 @@ export async function POST(req: NextRequest) {
       );
     }
   }
+}
+
+export async function PATCH(req: NextRequest) {
+  const body = await req.json();
+  console.log(body);
 }
